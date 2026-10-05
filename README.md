@@ -282,3 +282,45 @@ LavaLust Framework is open-source software licensed under the **[MIT License](ht
 - **GitHub Repository:** [https://github.com/ronmarasigan/lavalust](https://github.com/ronmarasigan/lavalust)
 - **Documentation:** [https://lavalust.netlify.app](https://lavalust.netlify.app)
 - **Report an Issue:** [https://github.com/ronmarasigan/lavalust/issues](https://github.com/ronmarasigan/lavalust/issues)
+
+---
+
+## Product Management API
+
+This project includes the LavaLust API used by the React app in `../frontend`.
+It provides `POST /api/auth/login`, an admin-only `POST /api/users` for creating
+standard user accounts, and authenticated product routes:
+
+- `GET /api/products`
+- `POST /api/products`
+- `PUT` or `PATCH /api/products/{id}`
+- `DELETE /api/products/{id}`
+
+The API uses the existing `products` table and expects the framework's
+`users` and `refresh_tokens` tables. Login uses an active user's email and
+password.
+
+If the `users` or `refresh_tokens` tables do not exist yet, run
+[`setup-auth.sql`](./setup-auth.sql) against the selected database. It creates
+the auth tables if missing and seeds a local demo admin. Only an admin can
+create additional standard user accounts, and the create-user endpoint never
+accepts a role from the client. Standard `user` accounts have read-only access to products:
+create/update requires the `write` scope and delete requires the `delete`
+scope. The product API enforces these scopes on the server even if a client
+manually sends a write request.
+
+For local development only, the setup script creates this demo admin:
+
+```sql
+Email: admin@example.com
+Password: password
+```
+
+The demo password is public and insecure. Replace it immediately, and never
+use it on a deployed or publicly accessible environment.
+
+Set `JWT_SECRET` and `REFRESH_TOKEN_KEY` to separate random values of at least
+32 characters before using the API. The API fails closed if they are missing
+or weak. Set `FRONTEND_URL` to the exact frontend origin in production; the
+development default allows local testing. Never commit real environment
+credentials.

@@ -45,3 +45,12 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 /** @var object $router **/
 
 $router->get('/', 'Welcome::index');
+
+$router->post('/api/auth/login', 'Auth::login');
+$router->post('/api/users', 'Users::create');
+
+$router->get('/api/products', 'Products::index');
+$router->post('/api/products', 'Products::create');
+$router->put('/api/products/{id}', 'Products::update')->where_number('id');
+$router->patch('/api/products/{id}', 'Products::update')->where_number('id');
+$router->delete('/api/products/{id}', 'Products::delete')->where_number('id');
